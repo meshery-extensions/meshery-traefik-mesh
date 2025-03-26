@@ -11,7 +11,7 @@ replace (
 )
 
 require (
-	github.com/google/uuid v1.3.1
+	github.com/google/uuid v1.6.0
 	github.com/layer5io/meshery-adapter-library v0.6.7
 	github.com/layer5io/meshkit v0.6.49
 	github.com/layer5io/service-mesh-performance v0.6.1
