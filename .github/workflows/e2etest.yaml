@@ -19,7 +19,7 @@ jobs:
       adapter_version:  ${{ env.version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Get version of adapter
         run: |
             if [ ${{ github.event_name }} == "release" ];then
@@ -39,7 +39,7 @@ jobs:
            yq e -i '.services.traefik.version="${{ steps.gettag.outputs.release }}"' ./.github/install/deploy.yaml 
            cat ./.github/install/deploy.yaml
       - name: Uploading file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v6
         with:
           name: patternfile
           path: ./.github/install/deploy.yaml 
@@ -77,12 +77,12 @@ jobs:
               if [ "${{github.event_name }}" == "release" ];then
                 echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
               fi
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v6
           with:
             repository: meshery/meshery 
             token: ${{ secrets.GH_ACCESS_TOKEN }}   
         - name: DownloadJSON
-          uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v6
           with:
             name: data.json
         - name: Add commit SHORT_SHA
@@ -119,7 +119,7 @@ jobs:
             mv test.md $filename.md
             rm data.json
         - name: Commit
-          uses: stefanzweifel/git-auto-commit-action@v4
+          uses: stefanzweifel/git-auto-commit-action@v7
           with:
             file_pattern: docs
             commit_user_name: l5io
