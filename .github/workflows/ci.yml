@@ -13,15 +13,15 @@ jobs:
     name: Check & Review code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v6
         with:
-          go-version: 1.19
-      - uses: actions/checkout@v3
+          go-version: 1.25
+      - uses: actions/checkout@v6
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v9
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.49
+          version: v2.7
 
           # Optional: working directory, useful for monorepos
           # working-directory: somedir
@@ -36,26 +36,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.19
+          go-version: 1.25
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go install github.com/kisielk/errcheck@latest; /home/runner/go/bin/errcheck -tags draft ./...
   error_code_check:
     name: Error code utility check
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.19
+          go-version: 1.25
       - run: |
             errWillHave="level=error"
             GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go install github.com/layer5io/meshkit/cmd/errorutil;
@@ -71,14 +71,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.19
-      - uses: dominikh/staticcheck-action@v1.2.0
+          go-version: 1.25
+      - uses: dominikh/staticcheck-action@v1
         with:
           install-go: false
           version: "2022.1"
@@ -87,13 +87,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
-          go-version: 1.19
+          go-version: 1.25
       - run: GOPROXY=https://proxy.golang.org,direct GOSUMDB=off GO111MODULE=on go vet -tags draft ./...
   sec_check:
     name: Security check
@@ -102,7 +102,7 @@ jobs:
       GO111MODULE: on
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
       - name: Run Gosec Security Scanner
@@ -117,11 +117,11 @@ jobs:
        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
      steps:
      - name: Check out code
-       uses: actions/checkout@v3
+       uses: actions/checkout@v6
        with:
         fetch-depth: 1
      - name: Setup Go
-       uses: actions/setup-go@v3
+       uses: actions/setup-go@v6
        with:
         go-version: 1.19
      - name: Create cluster using KinD
