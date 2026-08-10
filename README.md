@@ -38,6 +38,18 @@ alt="Traefik Mesh - Simpler Service Mesh" align="left" /></a>
 <br /><br />
 </p>
 
+## Development
+
+Building this adapter requires Go 1.26.4 or newer. The required version is
+kept in sync across `go.mod`, the Docker builder image, and the Makefile's
+dependency check.
+
+Run the local validation suite with:
+
+```sh
+make test
+```
+
 <p style="clear:both;">
 <h2><a name="contributing"></a><a name="community"></a> <a href="http://slack.meshery.io">Community</a> and <a href="https://docs.meshery.io/project/contributing">Contributing</a></h2>
 Our projects are community-built and welcome collaboration. 👍 Be sure to see the <a href="https://docs.meshery.io/project/community#getting-involved-in-the-community">Meshery Community Welcome Guide</a> for a tour of resources available to you and jump into our <a href="http://slack.meshery.io">Slack</a>! Contributors are expected to adhere to the <a href="https://github.com/cncf/foundation/blob/master/code-of-conduct.md">CNCF Code of Conduct</a>.
