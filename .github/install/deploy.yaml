@@ -6,4 +6,182 @@ services:
     apiVersion: core.meshmodel.dev/v1alpha1
     namespace: traefik
     version:  #will be inserted dynamically
-
+  bookinfo-details:
+    type: ServiceAccount.K8s
+    namespace: default
+    labels:
+      account: details
+  details:
+    type: Service.K8s
+    namespace: default
+    labels:
+      app: details
+      service: details
+    settings:
+      spec:
+        ports:
+          - name: http
+            port: 9080
+        selector:
+          app: details
+  details-v1:
+    type: Deployment.K8s
+    namespace: default
+    labels:
+      app: details
+      version: v1
+    settings:
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: details
+            version: v1
+        template:
+          metadata:
+            labels:
+              app: details
+              version: v1
+          spec:
+            serviceAccountName: bookinfo-details
+            containers:
+              - name: details
+                image: docker.io/istio/examples-bookinfo-details-v1:1.16.4
+                imagePullPolicy: IfNotPresent
+                ports:
+                  - containerPort: 9080
+  bookinfo-ratings:
+    type: ServiceAccount.K8s
+    namespace: default
+    labels:
+      account: ratings
+  ratings:
+    type: Service.K8s
+    namespace: default
+    labels:
+      app: ratings
+      service: ratings
+    settings:
+      spec:
+        ports:
+          - name: http
+            port: 9080
+        selector:
+          app: ratings
+  ratings-v1:
+    type: Deployment.K8s
+    namespace: default
+    labels:
+      app: ratings
+      version: v1
+    settings:
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: ratings
+            version: v1
+        template:
+          metadata:
+            labels:
+              app: ratings
+              version: v1
+          spec:
+            serviceAccountName: bookinfo-ratings
+            containers:
+              - name: ratings
+                image: docker.io/istio/examples-bookinfo-ratings-v1:1.16.4
+                imagePullPolicy: IfNotPresent
+                ports:
+                  - containerPort: 9080
+  bookinfo-reviews:
+    type: ServiceAccount.K8s
+    namespace: default
+    labels:
+      account: reviews
+  reviews:
+    type: Service.K8s
+    namespace: default
+    labels:
+      app: reviews
+      service: reviews
+    settings:
+      spec:
+        ports:
+          - name: http
+            port: 9080
+        selector:
+          app: reviews
+  reviews-v1:
+    type: Deployment.K8s
+    namespace: default
+    labels:
+      app: reviews
+      version: v1
+    settings:
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: reviews
+            version: v1
+        template:
+          metadata:
+            labels:
+              app: reviews
+              version: v1
+          spec:
+            serviceAccountName: bookinfo-reviews
+            containers:
+              - name: reviews
+                image: docker.io/istio/examples-bookinfo-reviews-v1:1.16.4
+                imagePullPolicy: IfNotPresent
+                env:
+                  - name: LOG_DIR
+                    value: /tmp/logs
+                ports:
+                  - containerPort: 9080
+  bookinfo-productpage:
+    type: ServiceAccount.K8s
+    namespace: default
+    labels:
+      account: productpage
+  productpage:
+    type: Service.K8s
+    namespace: default
+    labels:
+      app: productpage
+      service: productpage
+    settings:
+      spec:
+        ports:
+          - name: http
+            port: 9080
+        selector:
+          app: productpage
+  productpage-v1:
+    type: Deployment.K8s
+    namespace: default
+    labels:
+      app: productpage
+      version: v1
+    settings:
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: productpage
+            version: v1
+        template:
+          metadata:
+            labels:
+              app: productpage
+              version: v1
+          spec:
+            serviceAccountName: bookinfo-productpage
+            containers:
+              - name: productpage
+                image: docker.io/istio/examples-bookinfo-productpage-v1:1.16.4
+                imagePullPolicy: IfNotPresent
+                ports:
+                  - containerPort: 9080
