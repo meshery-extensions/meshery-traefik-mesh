@@ -46,7 +46,8 @@ jobs:
 
   TestTraefik:
     needs: SetPatterfile
-    uses: meshery/meshery/.github/workflows/test_adaptersv2.yaml@master
+    # This revision installs Meshery through mesheryctl before testing the adapter.
+    uses: meshery/meshery/.github/workflows/test_adaptersv2.yaml@d04a78869262be3778783d552bdf84a65a5ca2bb
     with:
       expected_resources: grafana-core,jaeger,prometheus-core,traefik-mesh-controller,traefik-mesh-proxy
       expected_resources_types: pod,pod,pod,pod,pod
