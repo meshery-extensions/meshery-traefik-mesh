@@ -80,6 +80,7 @@ jobs:
         - uses: actions/checkout@v3
           with:
             repository: meshery/meshery 
+            ref: master
             token: ${{ secrets.GH_ACCESS_TOKEN }}   
         - name: DownloadJSON
           uses: actions/download-artifact@v2
