@@ -12,21 +12,24 @@ on:
   release:
     types: [published]
 jobs:
-  SetPatterfile:
+  SetPatternfile:
     runs-on: ubuntu-latest
     outputs:
       sm_version: ${{ steps.gettag.outputs.release }}
-      adapter_version:  ${{ env.version }}
+      adapter_version: ${{ steps.adapter-version.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
       - name: Get version of adapter
+        id: adapter-version
         run: |
             if [ ${{ github.event_name }} == "release" ];then
-                echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+                version=${GITHUB_REF/refs\/tags\//}
             else 
-                echo "version=edge" >> $GITHUB_ENV
+                version=edge
             fi
+            echo "version=$version" >> $GITHUB_ENV
+            echo "version=$version" >> $GITHUB_OUTPUT
       - name: Get latest release tag
         id: gettag
         uses: pozetroninc/github-action-get-latest-release@master
@@ -45,12 +48,12 @@ jobs:
           path: ./.github/install/deploy.yaml 
 
   TestTraefik:
-    needs: SetPatterfile
+    needs: SetPatternfile
     uses: meshery/meshery/.github/workflows/test_adaptersv2.yaml@master
     with:
-      expected_resources: grafana-core,jaeger,prometheus-core,traefik-mesh-controller,traefik-mesh-proxy
-      expected_resources_types: pod,pod,pod,pod,pod
-      expected_resources_namespaces: traefik,traefik,traefik,traefik,traefik
+      expected_resources: grafana-core,jaeger,prometheus-core,traefik-mesh-controller,traefik-mesh-proxy,details-v1,ratings-v1,reviews-v1,productpage-v1,details,ratings,reviews,productpage
+      expected_resources_types: pod,pod,pod,pod,pod,deployment,deployment,deployment,deployment,service,service,service,service
+      expected_resources_namespaces: traefik,traefik,traefik,traefik,traefik,default,default,default,default,default,default,default,default
       deployment_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-traefik-mesh-deployment.yaml
       service_url: https://raw.githubusercontent.com/meshery/meshery/master/install/deployment_yamls/k8s/meshery-traefik-mesh-service.yaml
       adapter_name: traefik
