@@ -7,9 +7,15 @@ import (
 	"net/http"
 	"regexp"
 	"sort"
+	"strconv"
+	"time"
 
 	"github.com/layer5io/meshery-adapter-library/adapter"
 )
+
+const traefikReleasesURL = "https://api.github.com/repos/traefik/mesh/releases"
+
+var releaseHTTPClient = &http.Client{Timeout: 15 * time.Second}
 
 // Release is used to save the release informations
 type Release struct {
@@ -64,13 +70,22 @@ func getLatestReleaseNames(limit int) ([]adapter.Version, error) {
 
 // GetLatestReleases fetches the latest releases from the traefik mesh repository
 func GetLatestReleases(releases uint) ([]*Release, error) {
-	releaseAPIURL := "https://api.github.com/repos/traefik/mesh/releases?per_page=" + fmt.Sprint(releases)
-	// We need a variable url here hence using nosec
-	// #nosec
-	resp, err := http.Get(releaseAPIURL)
+	req, err := http.NewRequest(http.MethodGet, traefikReleasesURL, nil)
 	if err != nil {
 		return []*Release{}, ErrGetLatestReleases(err)
 	}
+
+	query := req.URL.Query()
+	query.Set("per_page", strconv.FormatUint(uint64(releases), 10))
+	req.URL.RawQuery = query.Encode()
+
+	resp, err := releaseHTTPClient.Do(req)
+	if err != nil {
+		return []*Release{}, ErrGetLatestReleases(err)
+	}
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return []*Release{}, ErrGetLatestReleases(fmt.Errorf("unexpected status code: %d", resp.StatusCode))
@@ -84,10 +99,6 @@ func GetLatestReleases(releases uint) ([]*Release, error) {
 	var releaseList []*Release
 
 	if err = json.Unmarshal(body, &releaseList); err != nil {
-		return []*Release{}, ErrGetLatestReleases(err)
-	}
-
-	if err = resp.Body.Close(); err != nil {
 		return []*Release{}, ErrGetLatestReleases(err)
 	}
 
